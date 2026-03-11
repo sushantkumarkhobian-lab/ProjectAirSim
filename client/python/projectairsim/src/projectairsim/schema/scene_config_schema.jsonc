@@ -347,7 +347,8 @@
                     "description": "Type of sim clock",
                     "enum": [
                         "steppable",
-                        "real-time"
+                        "real-time",
+                        "unreal-driven"
                     ]
                 },
                 "step-ns": {
