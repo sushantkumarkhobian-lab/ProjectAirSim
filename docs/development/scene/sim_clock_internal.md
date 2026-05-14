@@ -76,15 +76,15 @@ This is useful, for example, when running in a **non-physics "computer vision" m
 }
 ```
 
-#### #5 - Drive the clock from an external runtime
+#### #5 - Drive the clock from a host runtime (engine-driven)
 
-Use `external-driven` when a host runtime is responsible for invoking scene ticks and supplying elapsed time.
+Use `engine-driven` when a host runtime is responsible for invoking scene ticks and supplying elapsed time (plugin/sim-libs perspective). On **Unreal** integrations, that host is named **unreal-driven-clock** (`AUnrealScene::Tick` feeding frame delta into the engine-driven clock).
 
-This keeps Project AirSim usable with Unreal, other engines, or standalone orchestrators without tying the clock model to a specific engine name.
+This keeps Project AirSim usable with Unreal, other engines, or standalone orchestrators.
 
 ```json
 "clock": {
-  "type": "external-driven",
+  "type": "engine-driven",
   "step-ns": 3000000
 }
 ```

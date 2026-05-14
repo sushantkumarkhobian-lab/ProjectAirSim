@@ -348,7 +348,7 @@
                     "enum": [
                         "steppable",
                         "real-time",
-                        "external-driven"
+                        "engine-driven"
                     ]
                 },
                 "step-ns": {

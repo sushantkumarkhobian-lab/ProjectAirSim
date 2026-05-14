@@ -506,6 +506,15 @@ From the Unreal Engine developer's viewpoint, Project AirSim is a sophisticated 
 
 ## Unreal Engine Integration Architecture
 
+### Simulation clock: engine-driven vs unreal-clock
+
+Project AirSim distinguishes naming by **layer**:
+
+- **Engine-driven clock** (plugin / simulation libraries perspective): the scene clock type `"engine-driven"` in JSON. Core sim does **not** run its own periodic scene executor; a **host** outside that scheduler supplies elapsed time (`BeginFrame`) and the sim consumes it in fixed `step-ns` steps.
+- **Unreal-driven-clock** (Unreal Engine perspective): on `UnrealNative` scenes, that host is **Unreal’s game thread**. `AUnrealScene::Tick` passes each frame’s `DeltaTime` into the engine-driven clock and drains `ExternalTick()` while pending fixed steps remain.
+
+So **engine-driven** (config and sim-libs terminology) is named in this repo’s Unreal integration as **unreal-driven-clock** (where elapsed wall/frame time comes from).
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                Unreal Engine 5.7 Editor                     │

@@ -587,8 +587,8 @@ void Scene::Impl::StartSceneTick() {
 
   sim_time_ = SimClock::Get()->NowSimNanos();
 
-  // External-driven clock mode runs SceneTick() from a host loop.
-  if (clock_settings_.type == ClockType::kExternalDriven) {
+  // Engine-driven clock mode runs SceneTick() from a host loop.
+  if (clock_settings_.type == ClockType::kEngineDriven) {
     return;
   }
 
@@ -608,7 +608,7 @@ void Scene::Impl::StopSceneTick() {
     stop_physics_func();
   }
 
-  if (clock_settings_.type != ClockType::kExternalDriven) {
+  if (clock_settings_.type != ClockType::kEngineDriven) {
     executor_.Stop();
   }
 }
@@ -651,8 +651,8 @@ std::string Scene::Impl::SimGetClockType() {
       return Constant::Config::steppable;
     case ClockType::kRealTime:
       return Constant::Config::real_time;
-    case ClockType::kExternalDriven:
-      return Constant::Config::external_driven;
+    case ClockType::kEngineDriven:
+      return Constant::Config::engine_driven;
     default:
       return "unknown";
   }
@@ -1078,9 +1078,9 @@ void Scene::Loader::LoadSceneWithJSON(const json& json) {
     if (impl_.clock_settings_.pause_on_start) {
       SimClock::Get()->SimPause(true);
     }
-    } else if (impl_.clock_settings_.type == ClockType::kExternalDriven) {
+    } else if (impl_.clock_settings_.type == ClockType::kEngineDriven) {
     SimClock::Get(
-      std::make_shared<ExternalDrivenClock>(impl_.clock_settings_.step));
+      std::make_shared<EngineDrivenClock>(impl_.clock_settings_.step));
   } else {
     // Default to steppable clock
     SimClock::Get(std::make_shared<SteppableClock>());
@@ -1201,8 +1201,8 @@ void Scene::Loader::LoadClockSettings(const json& json) {
       impl_.clock_settings_.type = ClockType::kSteppable;
     } else if (clock_type == Constant::Config::real_time) {
       impl_.clock_settings_.type = ClockType::kRealTime;
-    } else if (clock_type == Constant::Config::external_driven) {
-      impl_.clock_settings_.type = ClockType::kExternalDriven;
+    } else if (clock_type == Constant::Config::engine_driven) {
+      impl_.clock_settings_.type = ClockType::kEngineDriven;
     } else {
       impl_.logger_.LogWarning(
           impl_.name_,

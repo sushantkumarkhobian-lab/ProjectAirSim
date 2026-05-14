@@ -126,37 +126,41 @@ class SteppableClock : public ClockBase {
 };
 
 // -----------------------------------------------------------------------------
-// ExternalDrivenClock
+// EngineDrivenClock
 
-class ExternalDrivenClock : public ClockBase {
+class EngineDrivenClock : public ClockBase {
  public:
   static constexpr TimeNano kMinStepNanos = 1;
 
-  explicit ExternalDrivenClock(
+  explicit EngineDrivenClock(
       TimeNano fixed_step_nanos = ClockBase::kDefaultStepNanos,
       TimeNano start = 0);
-  ~ExternalDrivenClock() override;
+  ~EngineDrivenClock() override;
 
   TimeNano NowSimNanos() const override;
 
   // Called from an external host loop to add elapsed frame time to the
   // accumulator.
-  void BeginFrame(TimeNano delta_nanos);
-  void BeginFrame(TimeSec delta_seconds);
+  void AccumulateStep(TimeNano delta_nanos);
+  void AccumulateStep(TimeSec delta_seconds);
 
   // True when enough accumulated real time exists for at least one sim step.
   bool HasPendingStep() const;
 
   void SetFixedStep(TimeNano fixed_step_nanos);
-  TimeNano GetRemainderNanos() const;
 
  protected:
   void Step() override;
 
  private:
-  std::atomic<TimeNano> current_sim_time_;
-  std::atomic<TimeNano> fixed_step_nanos_;
-  std::atomic<TimeNano> accumulated_nanos_;
+    // Current sim time is advanced in fixed steps by Step() as accumulated real
+    // time allows.
+    std::atomic<TimeNano> current_sim_time_;
+    // Fixed-step size used to convert variable frame deltas into deterministic
+    // simulation steps.
+    std::atomic<TimeNano> fixed_step_nanos_;
+    // Accumulated real time from external host frames that has not yet been consumed into sim time steps.
+    std::atomic<TimeNano> accumulated_nanos_;
 };
 
 // -----------------------------------------------------------------------------
@@ -179,7 +183,7 @@ class SimClock {  // TODO Avoid factory singleton pattern?
 // -----------------------------------------------------------------------------
 // Clock Settings
 
-enum class ClockType { kSteppable = 0, kRealTime = 1, kExternalDriven = 2 };
+enum class ClockType { kSteppable = 0, kRealTime = 1, kEngineDriven = 2 };
 
 struct ClockSettings {
   ClockType type = ClockType::kSteppable;

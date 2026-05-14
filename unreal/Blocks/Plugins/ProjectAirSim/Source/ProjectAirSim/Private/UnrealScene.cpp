@@ -289,21 +289,21 @@ void AUnrealScene::BeginPlay() {
   // in Unreal Engine builds. Determine the type from clock settings instead.
   if (sim_scene &&
       sim_scene->GetClockSettings().type ==
-          projectairsim::ClockType::kExternalDriven) {
-    external_driven_clock_ = static_cast<projectairsim::ExternalDrivenClock*>(
+          projectairsim::ClockType::kEngineDriven) {
+    unreal_driven_clock_ = static_cast<projectairsim::EngineDrivenClock*>(
         projectairsim::SimClock::Get());
   } else {
-    external_driven_clock_ = nullptr;
+    unreal_driven_clock_ = nullptr;
   }
-  using_external_driven_clock = external_driven_clock_ != nullptr;
+  using_unreal_driven_clock = unreal_driven_clock_ != nullptr;
 
   // Set up Unreal loop timing
   if (sim_scene &&
       (sim_scene->GetClockSettings().type ==
            projectairsim::ClockType::kSteppable ||
        sim_scene->GetClockSettings().type ==
-         projectairsim::ClockType::kExternalDriven)) {
-    // For steppable and external-driven clocks, synchronize Unreal's
+         projectairsim::ClockType::kEngineDriven)) {
+    // For steppable and unreal-driven clocks, synchronize Unreal's
     // DeltaTime
     // to the configured simulation step.
     double sim_step_sec = sim_scene->GetClockSettings().step / 1.0e9;
@@ -312,7 +312,7 @@ void AUnrealScene::BeginPlay() {
     if (using_unreal_physics) {
       // If scene has any robots with Unreal Physics, steppable sim clock must
       // follow Unreal's DeltaTime by external step calls
-      if (!using_external_driven_clock) {
+      if (!using_unreal_driven_clock) {
         projectairsim::SimClock::Get()->SetExternallySteppedOnly(true);
       }
 
@@ -429,16 +429,16 @@ void AUnrealScene::Tick(float DeltaTime) {
   bool is_unreal_paused = UGameplayStatics::IsGamePaused(unreal_world);
   bool is_simclock_paused = projectairsim::SimClock::Get()->IsPaused();
 
-  if (using_external_driven_clock && external_driven_clock_ != nullptr) {
+  if (using_unreal_driven_clock && unreal_driven_clock_ != nullptr) {
     if (!is_unreal_paused) {
-      external_driven_clock_->BeginFrame(
+      unreal_driven_clock_->AccumulateStep(
           UnrealHelpers::DeltaTimeToNanos(DeltaTime));
 
-      while (external_driven_clock_->HasPendingStep()) {
+      while (unreal_driven_clock_->HasPendingStep()) {
         if (!sim_scene->ExternalTick()) {
           UnrealLogger::Log(
               projectairsim::LogLevel::kWarning,
-              TEXT("[UnrealScene] External-driven scene tick failed."));
+              TEXT("[UnrealScene] Engine-driven scene tick failed."));
           break;
         }
       }
