@@ -127,7 +127,7 @@ Real-time clock is a **variable-step clock** with sim time step = real-time step
 }
 ```
 
-From the **simulation libraries / plugin** perspective, this is the **engine-driven** clock: a **fixed-step clock driven by a host loop outside core_sim’s scheduled executor**. The host contributes elapsed time (via `BeginFrame`); the simulation consumes it in deterministic steps of `step-ns`.
+From the **simulation libraries / plugin** perspective, this is the **engine-driven** clock: a **fixed-step clock driven by a host loop outside core_sim’s scheduled executor**. The host contributes elapsed time (via `AccumulateStep`); the simulation consumes it in deterministic steps of `step-ns`.
 
 This mode is useful when Project AirSim is embedded inside another runtime (another game engine, a custom orchestrator, etc.) that decides when scene ticks should run.
 
