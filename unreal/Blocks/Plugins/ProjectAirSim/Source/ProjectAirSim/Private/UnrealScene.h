@@ -116,9 +116,9 @@ class AUnrealScene : public AActor {
 
   TimeNano unreal_time;
   bool using_unreal_physics;
-    bool using_unreal_driven_clock = false;
-    microsoft::projectairsim::EngineDrivenClock* unreal_driven_clock_ =
-      nullptr;
+  bool using_unreal_driven_clock = false;
+  microsoft::projectairsim::EngineDrivenClock* unreal_driven_clock_ =
+    nullptr;
 
   std::unique_ptr<WorldSimApi> world_api;
   std::shared_ptr<TimeOfDay> time_of_day;

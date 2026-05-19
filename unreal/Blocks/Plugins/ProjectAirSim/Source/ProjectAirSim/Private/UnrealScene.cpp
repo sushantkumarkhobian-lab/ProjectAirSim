@@ -647,7 +647,6 @@ bool AUnrealScene::GetSimBoundingBox3D(
 
 nlohmann::json AUnrealScene::Get3DBoundingBoxServiceMethod(
     const std::string& object_name, int box_alignment) {
-  FRotator BoxRotation;
   FOrientedBox OrientedBox;
   projectairsim::BBox3D OutBBox;
   auto BoxAlignment =
