@@ -121,7 +121,7 @@ TEST(Scene, LoadExternalClock) {
   auto scene = projectairsim::Simulator::MakeScene();
   projectairsim::Simulator::LoadScene(scene, json);
 
-  EXPECT_EQ(scene.GetClockSettings().type, ClockType::kExternalClock);
+  EXPECT_EQ(scene.GetClockSettings().type, projectairsim::ClockType::kExternalClock);
   EXPECT_EQ(scene.GetClockSettings().step, 3000000);
 }
 
