@@ -348,7 +348,8 @@
                     "enum": [
                         "steppable",
                         "real-time",
-                        "engine-driven"
+                            "engine-driven",
+                            "external-clock"
                     ]
                 },
                 "step-ns": {

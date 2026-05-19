@@ -89,6 +89,17 @@ This keeps Project AirSim usable with Unreal, other engines, or standalone orche
 }
 ```
 
+#### #6 - Reserve an external control path (external-clock)
+
+Use `external-clock` when the scene should behave like `engine-driven` today, but you want a dedicated clock name for a future external controller to drive simlibs.
+
+```json
+"clock": {
+  "type": "external-clock",
+  "step-ns": 3000000
+}
+```
+
 ---
 
 Copyright (C) Microsoft Corporation.  

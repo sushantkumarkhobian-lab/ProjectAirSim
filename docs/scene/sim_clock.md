@@ -56,6 +56,17 @@ From the **Unreal plugin** perspective this clock mode is **engine-driven** (the
 }
 ```
 
+#### #4 - Use an external-clock for future external control integration
+
+Use the `external-clock` type when you want the same current behavior as `engine-driven`, but with a distinct configuration label reserved for future control of simlibs by another app or system.
+
+```json
+"clock": {
+  "type": "external-clock",
+  "step-ns": 3000000
+}
+```
+
 ---
 
 Copyright (C) Microsoft Corporation.  

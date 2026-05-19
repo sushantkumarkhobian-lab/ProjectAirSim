@@ -288,8 +288,10 @@ void AUnrealScene::BeginPlay() {
   // Use static_cast instead of dynamic_cast since RTTI is disabled (/GR-)
   // in Unreal Engine builds. Determine the type from clock settings instead.
   if (sim_scene &&
-      sim_scene->GetClockSettings().type ==
-          projectairsim::ClockType::kEngineDriven) {
+      (sim_scene->GetClockSettings().type ==
+         projectairsim::ClockType::kEngineDriven ||
+       sim_scene->GetClockSettings().type ==
+         projectairsim::ClockType::kExternalClock)) {
     unreal_driven_clock_ = static_cast<projectairsim::EngineDrivenClock*>(
         projectairsim::SimClock::Get());
   } else {
@@ -302,8 +304,10 @@ void AUnrealScene::BeginPlay() {
       (sim_scene->GetClockSettings().type ==
            projectairsim::ClockType::kSteppable ||
        sim_scene->GetClockSettings().type ==
-         projectairsim::ClockType::kEngineDriven)) {
-    // For steppable and unreal-driven clocks, synchronize Unreal's
+         projectairsim::ClockType::kEngineDriven ||
+       sim_scene->GetClockSettings().type ==
+           projectairsim::ClockType::kExternalClock)) {
+    // For steppable and host-driven clocks, synchronize Unreal's
     // DeltaTime
     // to the configured simulation step.
     double sim_step_sec = sim_scene->GetClockSettings().step / 1.0e9;

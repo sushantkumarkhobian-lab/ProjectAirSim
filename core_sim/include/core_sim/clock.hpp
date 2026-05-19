@@ -183,7 +183,12 @@ class SimClock {  // TODO Avoid factory singleton pattern?
 // -----------------------------------------------------------------------------
 // Clock Settings
 
-enum class ClockType { kSteppable = 0, kRealTime = 1, kEngineDriven = 2 };
+enum class ClockType {
+  kSteppable = 0,
+  kRealTime = 1,
+  kEngineDriven = 2,
+  kExternalClock = 3
+};
 
 struct ClockSettings {
   ClockType type = ClockType::kSteppable;

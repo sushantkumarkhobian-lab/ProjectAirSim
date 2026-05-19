@@ -109,6 +109,22 @@ TEST(Scene, GetActors) {
   EXPECT_EQ(scene.GetActors().size(), 0);
 }
 
+TEST(Scene, LoadExternalClock) {
+  json json = R"({
+    "id": "a",
+    "clock": {
+      "type": "external-clock",
+      "step-ns": 3000000
+    }
+  })"_json;
+
+  auto scene = projectairsim::Simulator::MakeScene();
+  projectairsim::Simulator::LoadScene(scene, json);
+
+  EXPECT_EQ(scene.GetClockSettings().type, ClockType::kExternalClock);
+  EXPECT_EQ(scene.GetClockSettings().step, 3000000);
+}
+
 // TODO Add tests for scene
 // TEST(Scene, SetCallbackPhysicsSetWrenches) {}
 // TEST(Scene, SetCallbackPhysicsStep) {}
