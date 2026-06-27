@@ -9,6 +9,7 @@ pip install projectairsim
 Gesture Mapping:
 - 1 Finger Up         -> Ascend / Takeoff
 - 1 Finger Down       -> Descend
+- 1 Finger Left       -> Move Left
 - 2 Fingers Up        -> Move Forward
 - 2 Fingers Down      -> Move Backward
 - Fist (Closed Hand)  -> Hover (Stop motion)
@@ -216,6 +217,9 @@ async def main():
     drone.arm()
 
     cap = cv2.VideoCapture(0)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
+
 
     flying = False
 
@@ -243,9 +247,12 @@ async def main():
             # =========================
             elif gesture == "LAND":
                 await drone.move_by_velocity_async(0, 0, 0, 0.05)
+
                 drone.disarm()
                 drone.disable_api_control()
-                shutdown_requested = True
+                await asyncio.sleep(0.2)
+                client.disconnect()
+
                 break
             # =========================
             # HOLD
@@ -280,6 +287,24 @@ async def main():
     finally:
         cap.release()
         cv2.destroyAllWindows()
+
+        try:
+            drone.disable_api_control()
+        except:
+            pass
+
+        try:
+            drone.disarm()
+        except:
+            pass
+
+        try:
+            client.disconnect()
+        except:
+            pass
+
+        await asyncio.sleep(0.2)
+
         print("Shutdown complete")
 
 if __name__ == "__main__":
